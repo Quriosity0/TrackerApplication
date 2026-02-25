@@ -11,7 +11,6 @@
 
 ## Visual Studio cache/options folders
 .vs/
-.vscode/
 
 ## Build results
 bin/
@@ -56,9 +55,6 @@ _ReSharper*/
 *.ldf
 *.ndf
 
-## VS Code specific
-.vscode/
-
 ## DotCover / Test Results
 *.dotCover
 TestResults/
@@ -73,3 +69,6 @@ TestResults/
 *.sdf
 *.opensdf
 *.unsuccessfulbuild
+
+## I HATE THAT THING
+slnx.sqlite
