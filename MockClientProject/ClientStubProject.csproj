@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{4C600F51-188C-4919-AABA-EF86E03AFF71}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>MockClientProject</RootNamespace>
-    <AssemblyName>MockClientProject</AssemblyName>
+    <RootNamespace>ClientStubProject</RootNamespace>
+    <AssemblyName>ClientStubProject</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -31,6 +31,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
