@@ -3,7 +3,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-namespace ChatClient
+namespace ClientProject
 {
     class Program
     {
@@ -14,7 +14,7 @@ namespace ChatClient
 
             NetworkStream stream = client.GetStream();
 
-         Console.Write("Введите имя: ");//временное тестирвание
+            Console.Write("Введите имя: ");//временное тестирвание
             string name = Console.ReadLine();
 
             byte[] nameData = Encoding.UTF8.GetBytes(name);

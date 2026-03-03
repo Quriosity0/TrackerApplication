@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A1A5E87A-55BA-49CF-BFC3-B6809CD5C2B4}</ProjectGuid>
+    <ProjectGuid>{4C600F51-188C-4919-AABA-EF86E03AFF71}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>ConsoleApp41</RootNamespace>
-    <AssemblyName>ConsoleApp41</AssemblyName>
+    <RootNamespace>MockClientProject</RootNamespace>
+    <AssemblyName>MockClientProject</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
