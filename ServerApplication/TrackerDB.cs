@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data;
 using System.Data.SqlClient;
 
-namespace traker1000
+namespace DBNamespace
 {
     class TrakerBD
     {
@@ -48,7 +43,7 @@ namespace traker1000
         IF OBJECT_ID('TrackerData') IS NULL
         CREATE TABLE TrackerData(
             NameApplication NVARCHAR(120),
-            TimeUse TIME,
+            TimeUse INT,
             LaunchDate DATETIME,
             ClosingDate DATETIME
                  )";
