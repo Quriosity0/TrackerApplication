@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 
 namespace DBNamespace
 {
-    class TrakerBD
+    public class TrakerBD
     {
         static string masterConn =
              @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True";
