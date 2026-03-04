@@ -116,7 +116,7 @@ namespace ServerApplication
         IF OBJECT_ID('TrackerData') IS NULL
         CREATE TABLE TrackerData(
             NameApplication NVARCHAR(120),
-            TimeUse TIME,
+            TimeUse INT,
             LaunchDate DATETIME,
             ClosingDate DATETIME
                  )";
