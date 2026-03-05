@@ -66,5 +66,69 @@ namespace DBNamespace
             }
             Console.WriteLine("Данные заполнены");
         }
+        public static void FillingTrackerData(int Id, string NameApplication, int TimeUse, DateTime LaunchDate, DateTime ClosingDate) //Метод для сохранение данных в таблицу TrackerData :3
+        {
+            string sql = "INSERT INTO TrackerData (NameApplication, TimeUse, LaunchDate, ClosingDate,IdUser) VALUES  (@nameapplication, @timeuse, @launchdate, @closingdate,@iduser)";
+            using (var conn = new SqlConnection(connString))
+            using (var cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@nameapplication", NameApplication);
+                cmd.Parameters.AddWithValue("@timeuse", TimeUse);
+                cmd.Parameters.AddWithValue("@launchdate", LaunchDate);
+                cmd.Parameters.AddWithValue("@closingdate", ClosingDate);
+                cmd.Parameters.AddWithValue("@iduser", Id);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+            Console.WriteLine("Данные заполнены");
+        }
+        public static void GetDataUsers(int Id) // Выводит данные таб. Usres
+        {
+            using (var conn = new SqlConnection(connString))
+            using (var cmd = new SqlCommand("SELECT * FROM Users WHERE Id = @Id", conn))
+            {
+                cmd.Parameters.AddWithValue("@Id", Id);
+                conn.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        string UserName = reader["UserName"].ToString();
+                        string UserPassword = reader["UserPassword"].ToString();
+                        string Connect = reader["Connect"].ToString();
+                        string DateTime = reader["DateTime"].ToString();
+                        Console.WriteLine($"Найдено: Имя: {UserName}, Пароль: {UserPassword}, Подключение: {Connect}, Дата и время: {DateTime}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Запись не найдена.");
+                    }
+                }
+            }
+        }
+        public static void GetTrackerData(int id)
+        {
+            using (var conn = new SqlConnection(connString))
+            using (var cmd = new SqlCommand("SELECT * FROM TrackerData WHERE IdUser = @Id", conn))
+            {
+                cmd.Parameters.AddWithValue("@Id", id);
+                conn.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        string Name = reader["NameApplication"].ToString();
+                        string Time = reader["TimeUse"].ToString();
+                        string Launch = reader["LaunchDate"].ToString();
+                        string Closing = reader["ClosingDate"].ToString();
+                        Console.WriteLine($"Найдено: Приложение: {Name}, Время исполь.{Time}, Время входа:{Launch}, Время Выхода{Closing}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Запись не найдена.");
+                    }
+                }
+            }
+        }
     }
 }
