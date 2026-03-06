@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.Collections.Generic;
 
 namespace DBNamespace
 {
@@ -10,6 +11,9 @@ namespace DBNamespace
 
         static string connString =
             @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TrackerDB;Integrated Security=True";
+
+        private static List<string> DataUser = new List<string>();
+        private static List<string> DataTracker = new List<string>();
 
         public static void CreateDatabase() //Метод для создания Базы данных :3
         {
@@ -35,6 +39,7 @@ namespace DBNamespace
         CREATE TABLE Users ( 
             Id INT PRIMARY KEY IDENTITY(1,1), 
            UserName NVARCHAR(90),
+            UserPassword NVARCHAR(8),
             Connect NVARCHAR(90),
             DateTime DATETIME,
             
@@ -42,6 +47,8 @@ namespace DBNamespace
 
         IF OBJECT_ID('TrackerData') IS NULL
         CREATE TABLE TrackerData(
+            IdUser INT,
+            FOREIGN KEY (IdUser) REFERENCES Users(Id),
             NameApplication NVARCHAR(120),
             TimeUse INT,
             LaunchDate DATETIME,
@@ -52,15 +59,16 @@ namespace DBNamespace
             }
             Console.WriteLine("Таблицы созданы");
         }
-        public static void FillingUser(string UserName, string Connect, DateTime datetime) //Метод для сохранение данных в таблицу Users :3
+        public static void FillingUser(string UserName, string Connect, DateTime datetime, string Password) //Метод для сохранение данных в таблицу Users :3
         {
-            string sql = "INSERT INTO Users (UserName, Connect,DateTime) VALUES  (@username, @connect, @datetime)";
+            string sql = "INSERT INTO Users (UserName, Connect,DateTime,UserPassword) VALUES  (@username, @connect, @datetime,@userpassword)";
             using (var conn = new SqlConnection(connString))
             using (var cmd = new SqlCommand(sql, conn))
             {
                 cmd.Parameters.AddWithValue("@username", UserName);
                 cmd.Parameters.AddWithValue("@connect", Connect);
                 cmd.Parameters.AddWithValue("@datetime", datetime);
+                cmd.Parameters.AddWithValue("@userpassword", Password);
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
@@ -82,7 +90,7 @@ namespace DBNamespace
             }
             Console.WriteLine("Данные заполнены");
         }
-        public static void GetDataUsers(int Id) // Выводит данные таб. Usres
+        public static List<string> GetDataUsers(int Id) // Выводит данные таб. Usres
         {
             using (var conn = new SqlConnection(connString))
             using (var cmd = new SqlCommand("SELECT * FROM Users WHERE Id = @Id", conn))
@@ -93,20 +101,26 @@ namespace DBNamespace
                 {
                     if (reader.Read())
                     {
+
                         string UserName = reader["UserName"].ToString();
                         string UserPassword = reader["UserPassword"].ToString();
                         string Connect = reader["Connect"].ToString();
                         string DateTime = reader["DateTime"].ToString();
-                        Console.WriteLine($"Найдено: Имя: {UserName}, Пароль: {UserPassword}, Подключение: {Connect}, Дата и время: {DateTime}");
+
+                        DataUser.Add(UserName);
+                        DataUser.Add(UserPassword);
+                        DataUser.Add(Connect);
+                        DataUser.Add(DateTime);
                     }
                     else
                     {
                         Console.WriteLine("Запись не найдена.");
                     }
+                    return DataUser;
                 }
             }
         }
-        public static void GetTrackerData(int id)
+        public static List<string> GetTrackerData(int id)
         {
             using (var conn = new SqlConnection(connString))
             using (var cmd = new SqlCommand("SELECT * FROM TrackerData WHERE IdUser = @Id", conn))
@@ -121,14 +135,19 @@ namespace DBNamespace
                         string Time = reader["TimeUse"].ToString();
                         string Launch = reader["LaunchDate"].ToString();
                         string Closing = reader["ClosingDate"].ToString();
-                        Console.WriteLine($"Найдено: Приложение: {Name}, Время исполь.{Time}, Время входа:{Launch}, Время Выхода{Closing}");
+                        DataTracker.Add(Name);
+                        DataTracker.Add(Time);
+                        DataTracker.Add(Launch);
+                        DataTracker.Add(Closing);
                     }
                     else
                     {
                         Console.WriteLine("Запись не найдена.");
                     }
+                    return DataTracker;
                 }
             }
         }
     }
+
 }
