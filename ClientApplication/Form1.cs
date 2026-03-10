@@ -125,7 +125,11 @@ namespace projecttrecer_client
 
                 if (r == "true")
                 {
-                    
+                    Form1 form1 = new Form1();
+                    form1.Close();
+
+                    Form2 form2 = new Form2();
+                    form2.Show();
                 }
                 else
                 {
