@@ -14,6 +14,8 @@ namespace DBNamespace
 
         private static List<string> DataUser = new List<string>();
         private static List<string> DataTracker = new List<string>();
+        private static List<string> Name = new List<string>();
+        private static List<string> Password = new List<string>();
 
         public static void CreateDatabase() //Метод для создания Базы данных :3
         {
@@ -117,6 +119,40 @@ namespace DBNamespace
                         Console.WriteLine("Запись не найдена.");
                     }
                     return DataUser;
+                }
+            }
+        }
+        public static List<string> GetName()
+        {
+            using (var conn = new SqlConnection(connString))
+            using (var cmd = new SqlCommand("SELECT * FROM Users ORDER BY Id", conn))
+            {
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        string UserName = reader["UserName"].ToString();
+                        Name.Add(UserName);
+                    }
+                    return Name;
+                }
+            }
+        }
+        public static List<string> GetPassword()
+        {
+            using (var conn = new SqlConnection(connString))
+            using (var cmd = new SqlCommand("SELECT * FROM Users ORDER BY Id", conn))
+            {
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        string UserPass = reader["UserPassword"].ToString();
+                        Password.Add(UserPass);
+                    }
+                    return Password;
                 }
             }
         }
