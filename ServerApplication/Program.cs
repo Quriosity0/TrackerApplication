@@ -6,6 +6,7 @@ using System.Threading;
 using System.Text;
 using System.Data.SqlClient;
 using DBNamespace;
+using RegistrationAndLogin;
 
 namespace ServerApplication
 {
@@ -53,39 +54,51 @@ namespace ServerApplication
         {
             TcpClient client = (TcpClient)obj;
             string clientName = "НН";
-            string password = "пароль"; // здесь пароль
-            DateTime loginTime = DateTime.Now;
+            string password = "";
+            DateTime loginTime = DateTime.Now;
 
             try
             {
                 NetworkStream stream = client.GetStream();
                 byte[] buffer = new byte[1024];
 
-                // Получаем имя клиента
-                int bytesRead = stream.Read(buffer, 0, buffer.Length);
+                // Получаем имя клиента
+                int bytesRead = stream.Read(buffer, 0, buffer.Length);
                 if (bytesRead > 0)
                 {
                     clientName = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
                 }
 
-                // пароль
-                buffer = new byte[1024];
+                // Получаем пароль
+                buffer = new byte[1024];
                 bytesRead = stream.Read(buffer, 0, buffer.Length);
                 if (bytesRead > 0)
                 {
-                    string clientPassword = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
+                    password = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
+                }
 
-                    if (clientPassword != password)
-                    {
-                        byte[] Msg = Encoding.UTF8.GetBytes("Неверный пароль.");
-                        stream.Write(Msg, 0, Msg.Length);
-                        return; //неверный пароль
-                    }
+                // Проверка логина
+                bool loginOk = RegistrationAndLogin.RegistrationAndLogin.LoginName(clientName);
+
+                // Проверка пароля
+                bool passwordOk = RegistrationAndLogin.RegistrationAndLogin.LoginPassword(password);
+
+                if (loginOk && passwordOk)
+                {
+                    byte[] Msg = Encoding.UTF8.GetBytes("true");
+                    stream.Write(Msg, 0, Msg.Length);
+                }
+                else
+                {
+                    byte[] Msg = Encoding.UTF8.GetBytes("false");
+                    stream.Write(Msg, 0, Msg.Length);
+                    return;
                 }
 
                 loginTime = DateTime.Now;
                 TrakerBD.FillingUser(clientName, "Подключен", loginTime, password);
                 Console.WriteLine($"[{loginTime}] Клиент [{clientName}] подключился.");
+
 
                 while (client.Connected)
                 {
@@ -96,13 +109,12 @@ namespace ServerApplication
                         {
                             string message = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
                             Console.WriteLine($"Сообщение от [{clientName}]: {message}");
-                            //здесь  Обрабатываем сообщения
-                            SendMessageToClient(client, $"Принято: {message}");
+                            SendMessageToClient(client, $"Принято: {message}");
                         }
                         else
                         {
-                            // Клиент отключился;
-                        }
+                            // Клиент отключился
+                        }
                     }
                     Thread.Sleep(500);
                 }
