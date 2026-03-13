@@ -29,7 +29,7 @@ namespace RegistrationAndLogin
         }
         public static bool RegistrPassword(string password)
         {
-            if (password.Length >= 8)
+            if (password.Length >= 8 && password.Length <= 14)
             {
                 return true;
             }
