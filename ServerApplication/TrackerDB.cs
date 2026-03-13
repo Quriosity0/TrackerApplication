@@ -41,7 +41,7 @@ namespace DBNamespace
         CREATE TABLE Users ( 
             Id INT PRIMARY KEY IDENTITY(1,1), 
            UserName NVARCHAR(90),
-            UserPassword NVARCHAR(8),
+            UserPassword NVARCHAR(14),
             Connect NVARCHAR(90),
             DateTime DATETIME,
             
