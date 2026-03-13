@@ -11,21 +11,17 @@ namespace RegistrationAndLogin
         public static bool RegistrName(string Login)
         {
             RegistrationName = TrakerBD.GetName();
-            bool Result = false;
             foreach (string name in RegistrationName)
             {
                 if (name == Login)
                 {
 
-                    Result = false;
+                    return false;
 
                 }
-                else
-                {
-                    Result = true;
-                }
+
             }
-            return Result;
+            return true;
         }
         public static bool RegistrPassword(string password)
         {
@@ -41,40 +37,30 @@ namespace RegistrationAndLogin
         public static bool LoginName(string Login)
         {
             LoginNames = TrakerBD.GetName();
-            bool Result = false;
             foreach (string name in LoginNames)
             {
                 if (name == Login)
                 {
 
-                    Result = true;
+                    return true;
 
                 }
-                else
-                {
-                    Result = false;
-                }
             }
-            return Result;
+            return false;
         }
         public static bool LoginPassword(string password)
         {
             LoginPass = TrakerBD.GetPassword();
-            bool Result = false;
             foreach (string pass in LoginPass)
             {
                 if (pass == password)
                 {
 
-                    Result = true;
+                    return true;
 
                 }
-                else
-                {
-                    Result = false;
-                }
             }
-            return Result;
+            return false;
         }
     }
 }
