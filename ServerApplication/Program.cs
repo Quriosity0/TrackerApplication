@@ -62,14 +62,24 @@ namespace ServerApplication
                 NetworkStream stream = client.GetStream();
                 byte[] buffer = new byte[1024];
 
-                // Получаем имя клиента
+
+
                 int bytesRead = stream.Read(buffer, 0, buffer.Length);
+                string mode = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
+
+
+
+                buffer = new byte[1024];
+                bytesRead = stream.Read(buffer, 0, buffer.Length);
                 if (bytesRead > 0)
                 {
                     clientName = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
                 }
 
+
                 // Получаем пароль
+
+
                 buffer = new byte[1024];
                 bytesRead = stream.Read(buffer, 0, buffer.Length);
                 if (bytesRead > 0)
@@ -77,10 +87,35 @@ namespace ServerApplication
                     password = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
                 }
 
-                // Проверка логина
-                bool loginOk = RegistrationAndLogin.RegistrationAndLogin.LoginName(clientName);
 
-                // Проверка пароля
+                // обработка регестрации
+
+
+                if (mode == "register")
+                {
+                    bool nameOk = RegistrationAndLogin.RegistrationAndLogin.RegistrName(clientName);
+                    bool passOk = RegistrationAndLogin.RegistrationAndLogin.RegistrPassword(password);
+
+                    if (nameOk && passOk)
+                    {
+
+                        TrakerBD.FillingUser(clientName, "Подключен", loginTime, password);
+
+                        byte[] Msg = Encoding.UTF8.GetBytes("true");
+                        stream.Write(Msg, 0, Msg.Length);
+                    }
+                    else
+                    {
+                        byte[] Msg = Encoding.UTF8.GetBytes("false");
+                        stream.Write(Msg, 0, Msg.Length);
+                    }
+
+                    return;
+                }
+
+
+
+                bool loginOk = RegistrationAndLogin.RegistrationAndLogin.LoginName(clientName);
                 bool passwordOk = RegistrationAndLogin.RegistrationAndLogin.LoginPassword(password);
 
                 if (loginOk && passwordOk)
@@ -94,11 +129,9 @@ namespace ServerApplication
                     stream.Write(Msg, 0, Msg.Length);
                     return;
                 }
-
                 loginTime = DateTime.Now;
                 TrakerBD.FillingUser(clientName, "Подключен", loginTime, password);
                 Console.WriteLine($"[{loginTime}] Клиент [{clientName}] подключился.");
-
 
                 while (client.Connected)
                 {
@@ -110,10 +143,6 @@ namespace ServerApplication
                             string message = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
                             Console.WriteLine($"Сообщение от [{clientName}]: {message}");
                             SendMessageToClient(client, $"Принято: {message}");
-                        }
-                        else
-                        {
-                            // Клиент отключился
                         }
                     }
                     Thread.Sleep(500);
