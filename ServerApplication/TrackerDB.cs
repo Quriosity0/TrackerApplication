@@ -43,8 +43,7 @@ namespace DBNamespace
            UserName NVARCHAR(90),
             UserPassword NVARCHAR(14),
             Connect NVARCHAR(90),
-            DateTime DATETIME,
-            
+            DateTime DATETIME
                 );  
 
         IF OBJECT_ID('TrackerData') IS NULL

@@ -95,7 +95,7 @@ namespace projecttrecer_client
         {
             string un = textBox1.Text.Trim();
             string pd = textBox2.Text;
-            byte[] data0 = Encoding.UTF8.GetBytes("Vhod");
+            byte[] data0 = Encoding.UTF8.GetBytes("login\n");
             stream.Write(data0, 0, data0.Length);
             stream.Flush();
 
@@ -114,11 +114,11 @@ namespace projecttrecer_client
             try
             {
 
-                byte[] data = Encoding.UTF8.GetBytes(un);
+                byte[] data = Encoding.UTF8.GetBytes(un + "\n");
                stream.Write(data, 0, data.Length);
                 stream .Flush();
 
-                byte[] data1 = Encoding.UTF8.GetBytes(pd);
+                byte[] data1 = Encoding.UTF8.GetBytes(pd + "\n");
                 stream.Write(data1, 0, data1.Length);
                 stream.Flush();
 
@@ -160,7 +160,7 @@ namespace projecttrecer_client
             string un = textBox3.Text.Trim();
             string pd = textBox4.Text;
             string cp = textBox5.Text;
-            byte[] data0 = Encoding.UTF8.GetBytes("register");
+            byte[] data0 = Encoding.UTF8.GetBytes("register\n");
             stream.Write(data0, 0, data0.Length);
             stream.Flush();
 
@@ -191,11 +191,11 @@ namespace projecttrecer_client
 
             try
             {
-                byte[] data = Encoding.UTF8.GetBytes(un);
+                byte[] data = Encoding.UTF8.GetBytes(un + "\n");
                 stream.Write(data, 0, data.Length);
                 stream.Flush();
 
-                byte[] data1 = Encoding.UTF8.GetBytes(pd);
+                byte[] data1 = Encoding.UTF8.GetBytes(pd + "\n");
                 stream.Write(data1, 0, data1.Length);
                 stream.Flush();
 
