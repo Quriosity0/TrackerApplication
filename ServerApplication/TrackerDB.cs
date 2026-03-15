@@ -43,8 +43,7 @@ namespace DBNamespace
            UserName NVARCHAR(90),
             UserPassword NVARCHAR(14),
             Connect NVARCHAR(90),
-            DateTime DATETIME,
-            
+            DateTime DATETIME
                 );  
 
         IF OBJECT_ID('TrackerData') IS NULL
@@ -63,7 +62,7 @@ namespace DBNamespace
         }
         public static void FillingUser(string UserName, string Connect, DateTime datetime, string Password) //Метод для сохранение данных в таблицу Users :3
         {
-            string sql = "INSERT INTO Users (UserName, Connect,DateTime,UserPassword) VALUES  (@username, @connect, @datetime,@userpassword)";
+            string sql = "INSERT INTO Users (UserName, Connect, DateTime, UserPassword) VALUES  (@username, @connect, @datetime, @userpassword)";
             using (var conn = new SqlConnection(connString))
             using (var cmd = new SqlCommand(sql, conn))
             {

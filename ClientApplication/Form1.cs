@@ -56,7 +56,7 @@ namespace projecttrecer_client
         {
             try
             {
-                client = new TcpClient("192.168.0.85", 5000);
+                client = new TcpClient("127.0.0.1", 5000);
                 stream = client.GetStream();
             }
             catch (SocketException se)
@@ -95,6 +95,9 @@ namespace projecttrecer_client
         {
             string un = textBox1.Text.Trim();
             string pd = textBox2.Text;
+            byte[] data0 = Encoding.UTF8.GetBytes("login\n");
+            stream.Write(data0, 0, data0.Length);
+            stream.Flush();
 
             if (string.IsNullOrEmpty(un) || string.IsNullOrEmpty(pd))
             {
@@ -111,19 +114,28 @@ namespace projecttrecer_client
             try
             {
 
-                byte[] data = Encoding.UTF8.GetBytes(un);
+                byte[] data = Encoding.UTF8.GetBytes(un + "\n");
                stream.Write(data, 0, data.Length);
                 stream .Flush();
 
-                byte[] data1 = Encoding.UTF8.GetBytes(pd);
+                byte[] data1 = Encoding.UTF8.GetBytes(pd + "\n");
                 stream.Write(data1, 0, data1.Length);
                 stream.Flush();
 
                 byte[] responseBuffer = new byte[256];
                 int bytesRead = stream.Read(responseBuffer, 0, responseBuffer.Length);
                 string r = Encoding.UTF8.GetString(responseBuffer, 0, bytesRead);
+                bool rb;
+                if (bool.TryParse(r, out rb))
+                {
+                    // result теперь равен true
+                }
+                else
+                {
+                    // Ошибка преобразования
+                }
 
-                if (r == "true")
+                if (rb == true)
                 {
                     Form1 form1 = new Form1();
                     form1.Close();
@@ -148,6 +160,10 @@ namespace projecttrecer_client
             string un = textBox3.Text.Trim();
             string pd = textBox4.Text;
             string cp = textBox5.Text;
+            byte[] data0 = Encoding.UTF8.GetBytes("register\n");
+            stream.Write(data0, 0, data0.Length);
+            stream.Flush();
+
 
             if (string.IsNullOrEmpty(un) || string.IsNullOrEmpty(pd) || string.IsNullOrEmpty(cp))
             {
@@ -175,19 +191,28 @@ namespace projecttrecer_client
 
             try
             {
-                byte[] data = Encoding.UTF8.GetBytes(un);
+                byte[] data = Encoding.UTF8.GetBytes(un + "\n");
                 stream.Write(data, 0, data.Length);
                 stream.Flush();
 
-                byte[] data1 = Encoding.UTF8.GetBytes(pd);
+                byte[] data1 = Encoding.UTF8.GetBytes(pd + "\n");
                 stream.Write(data1, 0, data1.Length);
                 stream.Flush();
 
                 byte[] responseBuffer = new byte[256];
                 int bytesRead = stream.Read(responseBuffer, 0, responseBuffer.Length);
                 string r = Encoding.UTF8.GetString(responseBuffer, 0, bytesRead);
+                bool rb;
+                if (bool.TryParse(r, out rb))
+                {
+                    // result теперь равен true
+                }
+                else
+                {
+                    // Ошибка преобразования
+                }
 
-                if (r == "true")
+                if (rb == true)
                 {
                     // Регистрация успешна
                     ResetRegistration();
