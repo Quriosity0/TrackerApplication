@@ -63,34 +63,30 @@ namespace ServerApplication
                 byte[] buffer = new byte[1024];
 
 
-
+                // получает режим (регистрация или вход)
                 int bytesRead = stream.Read(buffer, 0, buffer.Length);
                 string mode = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
 
 
-
+                // получает логин
                 buffer = new byte[1024];
                 bytesRead = stream.Read(buffer, 0, buffer.Length);
                 if (bytesRead > 0)
                 {
                     clientName = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
                 }
-
+                Console.WriteLine(clientName);
 
                 // Получаем пароль
-
-
                 buffer = new byte[1024];
                 bytesRead = stream.Read(buffer, 0, buffer.Length);
                 if (bytesRead > 0)
                 {
                     password = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
                 }
-
+                Console.WriteLine(password);
 
                 // обработка регестрации
-
-
                 if (mode == "register")
                 {
                     bool nameOk = RegistrationAndLogin.RegistrationAndLogin.RegistrName(clientName);
