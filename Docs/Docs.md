@@ -50,7 +50,9 @@ Tracker
 
 ***
 
-## 5.1 Архитектура системы
+## 5. 
+
+### 5.1 Архитектура системы
 
 **Проект реализуется по модели:**
 - клиент — оконное приложение (C#)
@@ -58,9 +60,9 @@ Tracker
 - база данных — MSSQL LocalDB
 - взаимодействие — TCP
 
-<img width="543" height="640" alt="image" src="https://github.com/user-attachments/assets/6b78dcbc-11b2-4cea-8ab8-c24486bd8c0e" />
+<img width="1085" height="1280" alt="img" src="https://github.com/user-attachments/assets/71e5ea3b-b276-4290-9e50-313d16fc33c9" />
 
-## 5.2 Компоненты системы
+### 5.2 Компоненты системы
 
 **Сервер:**
 - обработка подключений
@@ -304,7 +306,7 @@ Tracker
 
 ## 14. Используемые технологии
 - C#
-- .NET Framework 4.7.1
+- .NET Framework 4.7.2
 - Visual Studio Community 2019
 - MSSQL LocalDB
 - ADO.NET
