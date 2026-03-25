@@ -5,9 +5,8 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Text;
 using System.Data.SqlClient;
-using System.IO; // Добавлено для StreamReader
+using System.IO;
 using DBNamespace;
-using RegistrationAndLogin;
 
 namespace ServerApplication
 {
@@ -62,7 +61,6 @@ namespace ServerApplication
             {
                 NetworkStream stream = client.GetStream();
 
-                // ИСПОЛЬЗУЕМ StreamReader ДЛЯ ПОСТРОЧНОГО ЧТЕНИЯ
                 using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
                 {
                     // Читаем режим (регистрация или вход)
@@ -113,7 +111,7 @@ namespace ServerApplication
                         return;
                     }
 
-                    // обработка входа (для любого другого mode, например "Vhod" или "login")
+                    // обработка входа (для любого другого mode)
                     bool loginOk = RegistrationAndLogin.RegistrationAndLogin.LoginName(clientName);
                     bool passwordOk = RegistrationAndLogin.RegistrationAndLogin.LoginPassword(password);
 
@@ -147,7 +145,7 @@ namespace ServerApplication
                         }
                         Thread.Sleep(500);
                     }
-                } // reader автоматически закроется здесь
+                }
             }
             catch (Exception ex)
             {
