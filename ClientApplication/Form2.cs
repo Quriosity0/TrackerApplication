@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net.Sockets;
+using System.Diagnostics;
+using System.IO;
 
 namespace projecttrecer_client
 {
@@ -25,6 +28,42 @@ namespace projecttrecer_client
         private void label1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process[] procs = Process.GetProcesses();
+
+                StringBuilder sb = new StringBuilder();
+
+                foreach (Process proc in procs)
+                {
+                    try
+                    {
+                        sb.AppendLine(proc.ProcessName);
+                    }
+                    catch
+                    {
+                    }
+                }
+
+                string sendi = sb.ToString();
+
+                using (TcpClient client = new TcpClient("000.0.0.0", 5000))
+                using (NetworkStream stream = client.GetStream())
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write(sendi);
+                    writer.Flush();
+                }
+
+            }
+            catch
+            {
+
+            }
         }
     }
 }
