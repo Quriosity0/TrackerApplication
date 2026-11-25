@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using System.Text;
+using System.Drawing;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Windows.Forms;
 
 namespace projecttrecer_client
 {
@@ -23,20 +24,28 @@ namespace projecttrecer_client
         {
             InitializeComponent();
 
-            // Создаем элементы для вывода сообщений об ошибках
-            labelError = new Label() { Visible = false };
-            labelError.ForeColor = System.Drawing.Color.Red;
+            // Настраиваем метки ошибок (AutoSize = true, чтобы текст не обрезался)
+            labelError = new Label()
+            {
+                Visible = false,
+                AutoSize = true,
+                ForeColor = Color.Red,
+                Top = textBox2.Bottom + 10,
+                Left = textBox2.Left
+            };
             tabPage1.Controls.Add(labelError);
-            labelError.Top = textBox2.Bottom + 10;
-            labelError.Left = textBox2.Left;
 
-            labelRegError = new Label() { Visible = false };
-            labelRegError.ForeColor = System.Drawing.Color.Red;
+            labelRegError = new Label()
+            {
+                Visible = false,
+                AutoSize = true,
+                ForeColor = Color.Red,
+                Top = textBox5.Bottom + 10,
+                Left = textBox5.Left
+            };
             tabPage2.Controls.Add(labelRegError);
-            labelRegError.Top = textBox5.Bottom + 10;
-            labelRegError.Left = textBox5.Left;
 
-            // Устанавливаем плацебохолдеры
+            // Устанавливаем плейсхолдеры
             SetPlaceholder(textBox1, "Никнейм");
             SetPlaceholder(textBox2, "Пароль");
             SetPlaceholder(textBox3, "Никнейм");
@@ -90,14 +99,12 @@ namespace projecttrecer_client
             labelRegError.Visible = false;
         }
 
-        // Логин (Кнопка "Вход")
+                // Логин (Кнопка "Вход")
         private void button1_Click_1(object sender, EventArgs e)
         {
+            labelError.Visible = false;
             string un = textBox1.Text.Trim();
             string pd = textBox2.Text;
-            byte[] data0 = Encoding.UTF8.GetBytes("login\n");
-            stream.Write(data0, 0, data0.Length);
-            stream.Flush();
 
             if (string.IsNullOrEmpty(un) || string.IsNullOrEmpty(pd))
             {
@@ -105,18 +112,23 @@ namespace projecttrecer_client
                 return;
             }
 
-            if (stream == null || !client.Connected)
+            if (client == null || !client.Connected || stream == null)
             {
-                ShowError(labelError, "Нет подключения к серверу.");
-                return;
+                ConnectToServer();
+                if (client == null || !client.Connected)
+                {
+                    ShowError(labelError, "Нет подключения к серверу.");
+                    return;
+                }
             }
 
             try
             {
+                byte[] data0 = Encoding.UTF8.GetBytes("login\n");
+                stream.Write(data0, 0, data0.Length);
 
                 byte[] data = Encoding.UTF8.GetBytes(un + "\n");
-               stream.Write(data, 0, data.Length);
-                stream .Flush();
+                stream.Write(data, 0, data.Length);
 
                 byte[] data1 = Encoding.UTF8.GetBytes(pd + "\n");
                 stream.Write(data1, 0, data1.Length);
@@ -124,25 +136,26 @@ namespace projecttrecer_client
 
                 byte[] responseBuffer = new byte[256];
                 int bytesRead = stream.Read(responseBuffer, 0, responseBuffer.Length);
-                string r = Encoding.UTF8.GetString(responseBuffer, 0, bytesRead);
-                bool rb;
-                if (bool.TryParse(r, out rb))
-                {
-                    // result теперь равен true
-                }
-                else
-                {
-                    // Ошибка преобразования
-                }
+                string r = Encoding.UTF8.GetString(responseBuffer, 0, bytesRead).Trim();
 
-                if (rb == true)
+                // ---> ВОТ СЮДА ВСТАВЛЯЕТСЯ ЭТОТ БЛОК <---
+                if (bool.TryParse(r, out bool rb) && rb)
                 {
-                    Form1 form1 = new Form1();
-                    form1.Close();
+                    this.Hide();
+                    Form2 form2 = new Form2(client, stream, un);
 
-                    Form2 form2 = new Form2();
+                    // Когда Form2 закроется (по кнопке или крестику) — возвращаемся в Form1
+                    form2.FormClosed += (s, args) =>
+                    {
+                        textBox2.Clear();          // Очищаем поле пароля в целях безопасности
+                        labelError.Visible = false;
+                        ConnectToServer();         // Создаём новое соединение с сервером для следующего входа
+                        this.Show();               // Показываем Form1 обратно
+                    };
+
                     form2.Show();
                 }
+                // ---> КОНЕЦ БЛОКА <---
                 else
                 {
                     ShowError(labelError, "Неверное имя пользователя или пароль.");
@@ -154,16 +167,14 @@ namespace projecttrecer_client
             }
         }
 
+
         // Регистрация (Кнопка "Зарегистрироваться")
         private void button3_Click_1(object sender, EventArgs e)
         {
+            labelRegError.Visible = false;
             string un = textBox3.Text.Trim();
             string pd = textBox4.Text;
             string cp = textBox5.Text;
-            byte[] data0 = Encoding.UTF8.GetBytes("register\n");
-            stream.Write(data0, 0, data0.Length);
-            stream.Flush();
-
 
             if (string.IsNullOrEmpty(un) || string.IsNullOrEmpty(pd) || string.IsNullOrEmpty(cp))
             {
@@ -179,21 +190,27 @@ namespace projecttrecer_client
 
             if (un.Length < 3 || pd.Length < 6)
             {
-                ShowError(labelRegError, "Имя пользователя должно быть длиной >= 3 символов, пароль — >= 6 символов.");
+                ShowError(labelRegError, "Имя пользователя >= 3 символов, пароль >= 6 символов.");
                 return;
             }
 
-            if (stream == null || !client.Connected)
+            if (client == null || !client.Connected || stream == null)
             {
-                ShowError(labelRegError, "Нет подключения к серверу.");
-                return;
+                ConnectToServer();
+                if (client == null || !client.Connected)
+                {
+                    ShowError(labelRegError, "Нет подключения к серверу.");
+                    return;
+                }
             }
 
             try
             {
+                byte[] data0 = Encoding.UTF8.GetBytes("register\n");
+                stream.Write(data0, 0, data0.Length);
+
                 byte[] data = Encoding.UTF8.GetBytes(un + "\n");
                 stream.Write(data, 0, data.Length);
-                stream.Flush();
 
                 byte[] data1 = Encoding.UTF8.GetBytes(pd + "\n");
                 stream.Write(data1, 0, data1.Length);
@@ -201,23 +218,14 @@ namespace projecttrecer_client
 
                 byte[] responseBuffer = new byte[256];
                 int bytesRead = stream.Read(responseBuffer, 0, responseBuffer.Length);
-                string r = Encoding.UTF8.GetString(responseBuffer, 0, bytesRead);
-                bool rb;
-                if (bool.TryParse(r, out rb))
-                {
-                    // result теперь равен true
-                }
-                else
-                {
-                    // Ошибка преобразования
-                }
+                string r = Encoding.UTF8.GetString(responseBuffer, 0, bytesRead).Trim();
 
-                if (rb == true)
+                if (bool.TryParse(r, out bool rb) && rb)
                 {
-                    // Регистрация успешна
                     ResetRegistration();
                     tabControl1.SelectedTab = tabPage1;
-                    MessageBox.Show("Вы зарегистрированы успешно! Перейдите на вкладку 'Вход'.", "Успешная регистрация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Вы зарегистрированы успешно! Перейдите на вкладку 'Вход'.",
+                        "Успешная регистрация", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -235,29 +243,17 @@ namespace projecttrecer_client
         {
             tabControl1.SelectedTab = tabPage1;
         }
-    private void textBox2_TextChanged(object sender, EventArgs e)
-    {
-    }
-    private void textBox1_TextChanged(object sender, EventArgs e)
-    {
-    }
-    private void button2_Click_1(object sender, EventArgs e)
-    {
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
             tabControl1.SelectedTab = tabPage2;
         }
-    private void textBox3_TextChanged(object sender, EventArgs e)
-    {
-    }
-    private void textBox4_TextChanged(object sender, EventArgs e)
-    {
-    }
-    private void textBox5_TextChanged(object sender, EventArgs e)
-    {
-    }
-        private void tabPage1_Click(object sender, EventArgs e)
-        {
 
-        } 
+        private void textBox1_TextChanged(object sender, EventArgs e) { }
+        private void textBox2_TextChanged(object sender, EventArgs e) { }
+        private void textBox3_TextChanged(object sender, EventArgs e) { }
+        private void textBox4_TextChanged(object sender, EventArgs e) { }
+        private void textBox5_TextChanged(object sender, EventArgs e) { }
+        private void tabPage1_Click(object sender, EventArgs e) { }
     }
 }
-       
