@@ -138,7 +138,6 @@ namespace projecttrecer_client
                 int bytesRead = stream.Read(responseBuffer, 0, responseBuffer.Length);
                 string r = Encoding.UTF8.GetString(responseBuffer, 0, bytesRead).Trim();
 
-                // ---> ВОТ СЮДА ВСТАВЛЯЕТСЯ ЭТОТ БЛОК <---
                 if (bool.TryParse(r, out bool rb) && rb)
                 {
                     this.Hide();
@@ -155,7 +154,6 @@ namespace projecttrecer_client
 
                     form2.Show();
                 }
-                // ---> КОНЕЦ БЛОКА <---
                 else
                 {
                     ShowError(labelError, "Неверное имя пользователя или пароль.");

@@ -59,16 +59,6 @@ namespace projecttrecer_client
                     return;
                 }
             }
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                Process[] procs = Process.GetProcesses();
 
             // Закрываем текущую сессию с сервером
             LogoutFromServer();
@@ -76,7 +66,7 @@ namespace projecttrecer_client
             base.OnFormClosing(e);
         }
 
-         private void LogoutFromServer()
+        private void LogoutFromServer()
         {
             try
             {
@@ -97,7 +87,15 @@ namespace projecttrecer_client
             }
         }
 
-        private void label1_Click(object sender, EventArgs e) { }
+        private void label1_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process[] procs = Process.GetProcesses();
                 StringBuilder sb = new StringBuilder();
 
                 foreach (Process proc in procs)
@@ -113,6 +111,7 @@ namespace projecttrecer_client
 
                 string sendi = sb.ToString();
 
+                // Внимание: замените "000.0.0.0" на реальный IP-адрес сервера (например, "127.0.0.1")
                 using (TcpClient client = new TcpClient("000.0.0.0", 5000))
                 using (NetworkStream stream = client.GetStream())
                 using (StreamWriter writer = new StreamWriter(stream))
@@ -120,11 +119,10 @@ namespace projecttrecer_client
                     writer.Write(sendi);
                     writer.Flush();
                 }
-
             }
-            catch
+            catch (Exception ex)
             {
-
+                MessageBox.Show($"Ошибка отправки: {ex.Message}");
             }
         }
     }
