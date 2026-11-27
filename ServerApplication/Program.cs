@@ -162,7 +162,7 @@ namespace ServerApplication
             {
                 Console.WriteLine($"Ошибка с клиентом {clientName}: {ex.Message}");
             }
-            finally
+             finally
             {
                 int onlineCount;
                 lock (clientsLock)
@@ -173,15 +173,14 @@ namespace ServerApplication
 
                 try { client.Close(); } catch { }
 
-                DateTime logoutTime = DateTime.Now;
-
-                // Записываем статус "Отключен" в БД только если пользователь реально был авторизован
+                // Срабатывает ТОЛЬКО если пользователь успешно вошёл в аккаунт
                 if (isAuthorized)
                 {
+                    DateTime logoutTime = DateTime.Now;
                     TrakerBD.FillingUser(clientName, "Отключен", logoutTime, password);
+                    Console.WriteLine($"[{logoutTime}] Клиент [{clientName}] отключился.");
                 }
 
-                Console.WriteLine($"[{logoutTime}] Клиент [{clientName}] отключился.");
                 Console.WriteLine($"Клиентов онлайн: {onlineCount}");
             }
         }
