@@ -65,6 +65,10 @@ namespace projecttrecer_client
         {
             try
             {
+                // Закрываем старое разорванное соединение, если оно было
+                stream?.Close();
+                client?.Close();
+
                 client = new TcpClient("127.0.0.1", 5000);
                 stream = client.GetStream();
             }
@@ -77,6 +81,7 @@ namespace projecttrecer_client
                 ShowError(labelError, $"Общая ошибка: {ex.Message}");
             }
         }
+
 
         private void SetPlaceholder(TextBox textBox, string placeholder)
         {
@@ -99,7 +104,7 @@ namespace projecttrecer_client
             labelRegError.Visible = false;
         }
 
-                // Логин (Кнопка "Вход")
+        // Логин (Кнопка "Вход")
         private void button1_Click_1(object sender, EventArgs e)
         {
             labelError.Visible = false;
@@ -112,14 +117,13 @@ namespace projecttrecer_client
                 return;
             }
 
+            // Всегда открываем свежее соединение перед попыткой входа
+            // (так как сервер закрывает сокет после регистрации или неверного пароля)
+            ConnectToServer();
             if (client == null || !client.Connected || stream == null)
             {
-                ConnectToServer();
-                if (client == null || !client.Connected)
-                {
-                    ShowError(labelError, "Нет подключения к серверу.");
-                    return;
-                }
+                ShowError(labelError, "Нет подключения к серверу.");
+                return;
             }
 
             try
@@ -192,14 +196,12 @@ namespace projecttrecer_client
                 return;
             }
 
+            // Открываем свежее соединение перед регистрацией
+            ConnectToServer();
             if (client == null || !client.Connected || stream == null)
             {
-                ConnectToServer();
-                if (client == null || !client.Connected)
-                {
-                    ShowError(labelRegError, "Нет подключения к серверу.");
-                    return;
-                }
+                ShowError(labelRegError, "Нет подключения к серверу.");
+                return;
             }
 
             try
